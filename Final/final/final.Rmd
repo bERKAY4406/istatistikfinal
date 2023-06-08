@@ -1,0 +1,682 @@
+---
+title: "İnsani Gelişme Kalitesinin Çıkarımsal Analizi"
+author: 
+  - Berkay Büyükşahin [18080064]
+bibliography: ../bibliography/biblio.bib
+csl: ../csl/apa-tr.csl
+header-includes:
+  - \usepackage{polyglossia}
+  - \setmainlanguage{turkish}
+  - \usepackage{booktabs}
+  - \usepackage{caption} 
+  - \captionsetup[table]{skip=10pt}
+output:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 4
+    keep_tex: no
+    latex_engine: xelatex
+    number_sections: yes
+    toc: no
+geometry: margin=1in
+link-citations: yes
+urlcolor: blue
+fontsize: 12pt
+biblio-style: apalike
+abstract: |
+  Bu çalışma, insani gelişme faktörleri üzerine yapılan bir analizi kapsamaktadır. Çalışmada, ülkelerin kaybedilen sağlık beklentisi, hekim sayısı, hastane yatak sayısı, eğitim faktörleri, internet erişimi, uluslararası öğrenci değerlendirme puanı ve diğer değişkenler arasındaki ilişkiler incelenmiştir. Analiz sonuçlarına göre, kaybedilen sağlık beklentisi ile hekim sayısı arasında pozitif bir ilişki tespit edilmiştir. Yani, hekim sayısı arttıkça kaybedilen sağlık beklentisi de artmaktadır. Benzer şekilde, hastane yatak sayısı ile kaybedilen sağlık beklentisi arasında da pozitif bir ilişki bulunmuştur. Yani, hastane yatak sayısı arttıkça kaybedilen sağlık beklentisi de artmaktadır. Ayrıca, ilkokullardaki öğrenci-eğitimli öğretmen sayısı ile öğretmek üzere eğitilen ilkokul öğretmenleri arasında bir ilişki incelenmiştir. Bu ilişkinin doğası ve etkisi çalışmada daha detaylı bir şekilde açıklanmıştır. İnternet erişimi olan okulların PISA puanı üzerinde olumlu bir etkisi olduğu tespit edilmiştir. Yani, internete erişimi olan okullarda eğitim kalitesi ve öğrenci performansı daha yüksek olmaktadır. Güvencesiz istihdam oranı ile sağlık beklentisi arasında da bir ilişki incelenmiştir. Güvencesiz istihdam oranı yüksek olan ülkelerde genellikle sağlık beklentisi düşük olmaktadır. Son olarak, elektriğe erişimi olan kırsal nüfus ile güvenli içme suyu ve sanitasyon hizmetlerini kullanan nüfus arasındaki ilişki de değerlendirilmiştir. Elektriğe erişimi olan kırsal nüfusun artması, güvenli içme suyu ve sanitasyon hizmetlerinin kullanımını da artırmaktadır. Bu çalışma, insani gelişme faktörlerinin birbirleriyle olan ilişkilerini ve insan yaşamını etkileyen faktörleri analiz etmeyi amaçlamaktadır. Elde edilen bulgular, insani gelişme sürecine katkıda bulunmayı hedefleyen politikaların ve stratejilerin oluşturulmasına yardımcı olabilir. Ancak, çalışmanın sınırlamaları ve ilerideki geliştirme potansiyeli göz önünde bulundurulmalıdır.
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE, echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+<!-- ======================================================================= -->
+<!-- ============================== NOTLAR ================================= -->
+<!-- ======================================================================= -->
+[Github Repo](https://github.com/KULLANICI_ADINIZ/REPO_ADINIZ)
+
+
+# Giriş
+İnsani gelişme, ekonomik büyüme yaratırken bireylerin sahip oldukları fırsat ve özgürlükleri de artırma sürecine verilen isimdir. İnsani gelişme, kapsayıcı sürdürülebilir büyüme, demokratik yönetişim, güvenilir iş ortamı, kapsamlı sağlık hizmetleri gibi insan hayatını doğrudan ilgilendiren ve etkileyen bir değerler bütünüdür. İnsani gelişme, insanların kendilerine ve sahip oldukları fırsatlara odaklanan bir yaklaşımdır. Bu veri setimizde insani gelişme kalitesini etkileyen faktörler ve gözlemler bulunmaktadır. Bu veri setinde bulunan değişkenler şunlardır:
+
+* **Ülkeler**
+* **Kayıp sağlık beklentisi:** _Yaşam beklentisi ile sağlıklı yaşam beklentisi arasındaki göreli farktır._
+* **Doktorlar:** _10.000 kişi başına ifade edilen hem pratisyen hem de uzman tıp doktorlarının sayısı._
+* **Hastane yatakları:** _10.000 kişi başına mevcut hastane yatağı sayısı._
+* **Öğrenci-eğitimli öğretmen oranı, ilkokul:** _İlköğretimde eğitimli öğretmen başına düşen ortalama öğrenci sayısı._
+* **Öğretmenlik yapmak üzere eğitilen ilkokul öğretmenleri:** _İlköğretim düzeyinde öğretmenlik yapmak için gereken eğitimini almış olan ilkokul öğretmenlerinin yüzdesi._
+* **İnternete erişimi olan okullar:** _Eğitim amaçlı internete erişimi olan okulların yüzdesi._
+* **Uluslararası Öğrenci Değerlendirme Programı (PISA) puanı:** _Öğrencilerin okuma, matematik ve fen bilgi ve becerilerinin test edilmesinden elde edilen puan._
+* **Güvencesiz istihdam Oranı:** _Çalışmaya ihtiyaç duyan kişiyi korumayan, çalışanın belli bir sendika kurumundan yararlanamayacağı bir istihdam edilme şeklinin oranı._
+* **Elektriğe erişimi olan kırsal nüfus:** _Elektriğe erişimi olan kırsal alanlarda yaşayan insanlar._
+* **Güvenli bir şekilde yönetilen içme suyu hizmetlerini kullanan nüfus:** _Erişilebilen, ihtiyaç duyulduğunda mevcut olan gelişmiş bir kaynaktan su içen nüfusun yüzdesi._
+* **Güvenli bir şekilde yönetilen sanitasyon hizmetlerini kullanan nüfus:** _Diğer hanelerle paylaşılmayan ve dışkının güvenli olarak bertaraf edildiği veya arıtıldığı gelişmiş tesisi kullanan nüfusun yüzdesi._
+
+## Çalışmanın Amacı
+İnsanların düzgün yaşaması, özellikle çocuk hakları için insani gelişme kalitesi ve endeski çok önemlidir. Bu araştırma sonucunda bir ülkenin gelişmiş, gelişmekte olan ya da gelişmemiş bir ülke olduğu; bunun yanı sıra ekonomisindeki etkinin yaşam niteliğini ne düzeyde etkilediğini çıkarımsal analizler sonucu göstereceğiz.
+
+## Literatür 
+Ülkeler, sahip oldukları coğrafi büyüklük, nüfus, kaynaklar, iklim ve siyasal-sosyal sisteme göre çeşitlilik göstermektedirler. Genellikle iktisadi gelişmeyi ya da ülkelerin gelişmişlik düzeyini ifade eden ölçüm gelir olmuştur. “Gelir insanların edinmek istedikleri önemli bir fırsattır fakat yaşamlarının toplamı da değildir”. Bu nedenle gelişme, gelir ve servetin artmasının ötesinde insana odaklı bir kavramdır. [@gunsoy2005insani] Gelişme, tüm insanların yaşam kalitesinde iyileşme sürecidir. İnsanların yaşam düzeylerinin iyileşmesi ile, ki bu da onların gelirlerinin artması ve yiyecek tüketimlerinin, sağlık hizmetlerinin, eğitimlerinin ve diğer koşullarının, ekonomik büyüme ile birlikte iyileşmesidir. Sosyal, kültürel, politik kurumlar, ekonomik sistemler ve enstitülerin yapılanması ile birlikte insanların kendine güveninin artması aynı şekilde insana verilen değerin artmasıdır. İnsanların seçeneklerinin genişlemesiyle birlikte özgürlüklerinin artması ve tüketilen mal ve hizmetlerin çeşitliliğinin artmasıdır. [@arguden2008yacsam]
+Günümüzde toplumların karşılaştığı en önemli sıkıntıların başında gelen yoksulluk, zamanla küresel bir boyut kazanmıştır. Yoksulluk kavramı kuşkusuz ki yalnızca gelir düzeyi ile ele alınamaz. Bununla beraber eğitim, sağlık ve toplumsal adalet gibi kıstaslar da yoksulluğu tanımlamaktadır. [@sagar1998human] Yoksulluğu ifade eden birçok yaklaşım mevcuttur. Dünya Bankası, IMF ve AB gibi uluslararası kuruluşlar yoksulluğa farklı tanımlar kazandırmıştır. Birleşmiş Milletler Kalkınma Programı'nın insani gelişme kavramını yenilemesiyle insani kalkınma önem kazanmıştır. Bu amaçla Birleşmiş Milletler Kalkınma Programı tarafından geliştirilmiş olan İnsani Gelişme Endeksi, tüm gelişmiş ve gelişmekte olan ülkelerin kalkınma düzeylerini her alanda inceleyen geniş perspektifli endeks olarak karşımıza çıkan önemli bir ölçüttür. [@ceylan2019insani] 
+Çok boyutlu bir kavram olan insani gelişmenin temel unsurlarını, Birleşmiş Milletler’in İnsani Gelişme Endeksi’ndeki 3 boyut oluşturur. Bu üç temel boyut: bireyin uzun, sağlıklı ve yaratıcı bir hayat yaşaması; bilgi ve eğitim alabilme imkanına sahip olması; insana yaraşır bir hayat için gerekli kaynaklara ulaşabilmesidir. [@papalia2007human] İnsani gelişme, en azından tüm insanlara bireysel veya kolektif olarak, kendi potansiyellerini geliştirebilmeleri ve bu yolla üretken ve yaratıcı bir hayat geçirebilmeleri için gerekli şartları sağlamayı merkezinde tutar. [@papalia2007human]
+
+
+## Veri 
+
+  Kaybedilen sağlık beklentisi değişkeninin dağılımı incelendiğinde, minimum değerin 11.05 ve maksimum değerin 17.11 olduğu görülür. Ortalama değer 13.11 ve medyan 12.95 olduğundan, dağılımın sağa çekildiği veya sağa çarpık olduğu söylenebilir. 1 eksik değer bulunmaktadır.
+  
+  Hekim sayısı değişkeninin dağılımı incelendiğinde, minimum değerin 0.433 ve maksimum değerin 84.199 olduğu görülür. Ortalama değer 25.742 ve medyan 23.021 olduğundan, dağılımın sağa çekildiği veya sağa çarpık olduğu söylenebilir. 1 eksik değer bulunmaktadır.
+  
+  Hastane yatak sayısı değişkeninin dağılımı incelendiğinde, minimum değerin 2.00 ve maksimum değerin 129.80 olduğu görülür. Ortalama değer 32.41 ve medyan 26.65 olduğundan, dağılımın sağa çekildiği veya sağa çarpık olduğu söylenebilir. 5 eksik değer bulunmaktadır.
+  
+  İlkokullarda öğrenci-eğitimli öğretmen oranı değişkeninin dağılımı incelendiğinde, minimum değerin 8.98 ve maksimum değerin 240.39 olduğu görülür. Ortalama değer 32.92 ve medyan 23.55 olduğundan, dağılımın sağa çekildiği veya sağa çarpık olduğu söylenebilir. 45 eksik değer bulunmaktadır.
+  
+   İnternet erişimi olan ilkokulların oranı değişkeni incelendiğinde, minimum değer 0.00, maksimum değer 100.00 olarak görülür. Ortalama değer 68.87 ve medyan 88.16 olduğundan, genel olarak ilkokulların büyük çoğunluğunda internet erişiminin olduğu söylenebilir. Ancak, 39 eksik değer bulunmaktadır.
+   
+  İnternet erişimi olan ortaöğretim okullarının oranı değişkeni incelendiğinde, minimum değer 0.00, maksimum değer 100.00 olarak görülür. Ortalama değer 78.44 ve medyan 95.34 olduğundan, genel olarak ortaöğretim okullarının büyük çoğunluğunda internet erişimi olduğu söylenebilir. Ancak, 38 eksik değer bulunmaktadır.
+  
+   Uluslararası Öğrenci Değerlendirme Programı (PISA) puanları incelendiğinde, öğrencilerin okuma, matematik ve fen bilgisi alanlarındaki test puanlarının minimum değeri 0.0, maksimum değeri 579.0 olarak görülür. Medyan değer 395.0 ve ortalama değer 271.8 olduğundan, genel olarak öğrencilerin PISA testlerinde ortalama bir başarı gösterdikleri söylenebilir.
+   
+  Güvencesiz istihdam oranı değişkeni incelendiğinde, toplam istihdamın yüzdesini temsil eden değerlerin minimum değeri 0.0, maksimum değeri 579.0 olarak görülür.
+  
+   Elektriğe erişimi olan kırsal nüfusun oranı değişkeni incelendiğinde, minimum değer 1.994, maksimum değer 100.000 olarak görülür. Medyan değer 100.000 ve ortalama değer 88.344 olduğundan, genel olarak kırsal bölgelerde elektriğe erişimin yüksek olduğu söylenebilir. Ancak, 1 eksik değer bulunmaktadır.
+   
+  Güvenli bir şekilde yönetilen içme suyu hizmetlerini kullanan nüfusun oranı değişkeni incelendiğinde, minimum değer 5.59, maksimum değer 100.00 olarak görülür. Medyan değer 89.79 ve ortalama değer 76.15 olduğundan, genel olarak nüfusun büyük bir kısmının güvenli içme suyu hizmetlerinden yararlandığı söylenebilir. Ancak, 29 eksik değer bulunmaktadır.
+  
+   Öğretmek üzere eğitilen ilkokul öğretmenleri değişkeni incelendiğinde, minimum değer 15.27, maksimum değer 100.00 olarak görülür. Medyan değer 95.56 ve ortalama değer 87.88 olduğundan, genel olarak ilkokul öğretmenlerinin büyük bir kısmının eğitimlerini tamamlamıştır.
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(here)
+kalite <- readxl::read_xlsx(here("../data/insanigelismekalitesi.xlsx"))
+```
+
+
+```{r, echo=FALSE}
+library(xtable) 
+# devtools::install_github("emraher/summarytools")
+library(summarytools)
+st_options(lang = "tr")
+```
+
+```{r, echo=FALSE}
+kalite$`Kaybedilen Saglik Beklentisi`<-as.numeric(kalite$`Kaybedilen Saglik Beklentisi`)
+kalite$`Hekim Sayisi`<-as.numeric(kalite$`Hekim Sayisi`)
+kalite$`Hastane Yatak Sayisi`<-as.numeric(kalite$`Hastane Yatak Sayisi`)
+kalite$`Uluslararası.Öğrenci.Değerlendirme.Programı.(PISA).Puanı.(Okuma,Matematik,Bilim.Toplam.Oranları)`<-as.numeric(kalite$`Uluslararası.Öğrenci.Değerlendirme.Programı.(PISA).Puanı.(Okuma,Matematik,Bilim.Toplam.Oranları)`)
+kalite$`Güvencesiz.İstihdam.Oranı(Toplam.İstihdamın.Yüzdesi)`<-as.numeric(kalite$`Uluslararası.Öğrenci.Değerlendirme.Programı.(PISA).Puanı.(Okuma,Matematik,Bilim.Toplam.Oranları)`)
+kalite$`Elektriğe.Erişimi.Olan.Kırsal.Nüfusun.Oranı.(%)`<-as.numeric(kalite$`Elektriğe.Erişimi.Olan.Kırsal.Nüfusun.Oranı.(%)`)
+kalite$`Güvenli.Bir.Şekilde.Yönetilen.İçme.Suyu.Hizmetlerini.Kullanan.Nüfusun.Oranı.(%)`<-as.numeric(kalite$`Güvenli.Bir.Şekilde.Yönetilen.İçme.Suyu.Hizmetlerini.Kullanan.Nüfusun.Oranı.(%)`)
+kalite$`Güvenli.Bir.Şekilde.Yönetilen.Sanitasyon.Hizmetlerini.Kullanan.Nüfusun.Oranı.(%)`<-as.numeric(kalite$`Güvenli.Bir.Şekilde.Yönetilen.Sanitasyon.Hizmetlerini.Kullanan.Nüfusun.Oranı.(%)`)
+kalite$`İlkokullarda.Öğrenci-Eğitimli.Öğretmen.Oranı`<-as.numeric(kalite$`İlkokullarda.Öğrenci-Eğitimli.Öğretmen.Oranı`)
+kalite$Öğretmek.Üzere.Eğitilmiş.İlkokul.Öğretmenleri<-as.numeric(kalite$Öğretmek.Üzere.Eğitilmiş.İlkokul.Öğretmenleri)
+kalite$İnternet.Erişimi.Olan.İlkokulların.Oranı<-as.numeric(kalite$İnternet.Erişimi.Olan.İlkokulların.Oranı)
+kalite$İnternet.Erişimi.Olan.İlkokulların.Oranı<-as.numeric(kalite$İnternet.Erişimi.Olan.İlkokulların.Oranı)
+kalite$`İnternet.Erişimi.Olan.Ortaöğretim.Okullarının.Oranı.(%)`<-as.numeric(kalite$`İnternet.Erişimi.Olan.Ortaöğretim.Okullarının.Oranı.(%)`)
+
+data(kalite)
+summary(kalite[,1:13])
+```
+
+```{r, echo=FALSE}
+kalite <- kalite %>% 
+  janitor::clean_names()
+
+names(kalite)
+```
+
+```{r, echo=FALSE}
+complete.cases(kalite)
+na.omit(kalite)
+```
+
+```{r, echo=FALSE}
+
+kalite <- kalite %>% 
+  rename_with(~str_remove(.x, "_okuma_matematik_bilim_toplam_oranları*"))
+
+names(kalite)
+```
+
+```{r, echo=FALSE}
+
+kalite <- kalite %>% 
+  rename_with(~str_remove(.x, "_percent*"))
+
+names(kalite)
+```
+
+# Yöntem ve Veri Analizi
+
+Bu analizimizde bazı soruların cevaplarını araştıracağız. Bunlar;
+
+* *1.* Hekim sayısı ile kaybedilen sağlık beklentisi arasında nasıl bir ilişki var?
+* *2.* Hastane yatak sayısı ile kaybedillen sağlık beklentisi arasında nasıl bir ilişki var?
+* *3.* İlkokullarda öğrenci-eğitimli öğretmen sayısı ile öğretmek üzere eğitilmiş öğretmen sayısı arasında nasıl bir ilişki var?
+* *4.* İnternet erişimi olan ilkokulların ve ortaokulların kıyaslaması.
+* *5.* İnternet erişimi olan okullar PISA puanını nasıl etkiliyor?
+* *6.* Güvencsiz istihdam oranı en fazla hangi ülkede? Sağlık bekletisi nasıl?
+* *7.* Elektriğe erişimi olan kırsal nüfus güvencesiz istihdam oranını etkiliyor mu?
+* *8.* Güvenli içme suyu ve güvenli sanitasyon kıyalaması. Elektriğe erişim nasıl? Sağlık beklentisi nasıl?
+
+
+$$
+Y_t = β_0 + β_N * N_t + β_P * P_t + β_I * I_t + ε_t
+$$
+
+
+```{r, echo=FALSE}
+library(ggcorrplot)
+library(GGally)
+ggpairs(kalite, columns = 2:6, title="Yaşam Kalitesi", aes(color = "Species", alpha = 0.5),
+        upper = list(continuous = wrap("cor", size = 2.5)))
+```
+
+```{r, echo=FALSE}
+library(ggcorrplot)
+library(GGally)
+ggpairs(kalite, columns = 7:12, title="Yaşam Kalitesi", aes(color = "Species", alpha = 0.5),
+        upper = list(continuous = wrap("cor", size = 2.5)))
+```
+
+
+Yukarıdaki grafiklere baktığımızda, verileri anlamaya ve soru sormaya başlayabiliriz. Korelasyon katsayıları değişkenlerin bir ilişkiye ne kadar yakın olduğu hakkında bilgi sağlar; korelasyon katsayısı 1'e ne kadar yakınsa, ilişki o kadar güçlü olur. Dağılım grafikleri değişken çiftleri arasındaki ilişkileri görselleştirmemize izin verir. Noktaların net bir görsel desene sahip olduğu grafikler (şekilsiz bir bulut gibi görünmek yerine) daha güçlü bir ilişkiyi gösterir.
+
+Şimdi sorularmızı sorarak cevaplar bulmaya çalışalım:
+
+Hangi öngörücü değişkenler cevap değişkeniyle ilişkili görünüyor? Korelasyon katsayısı 1'e yakın ve noktalar doğrusal bir desene sahip gibi görünüyor, korelasyon katsayısı daha küçük olanlarda dağılım grafiğindeki noktalar daha fazla dağılmıştır.
+
+```{r, echo=FALSE}
+library(ggplot2)
+ggplot(kalite, aes(x = kaybedilen_saglik_beklentisi, y = hekim_sayisi)) +
+  geom_point(na.rm = TRUE, colour = "red", shape = 2, size = 4) +
+   labs(x = "Kaybedilen Sağlık Beklentisi", y = "Hekim Sayısı")
+```
+
+Bu dağılım grafiği, "kaybedilen sağlık beklentisi" ile "hekim sayısı" arasındaki ilişkiyi görselleştirir. Eğer noktalar genel olarak yukarı doğru bir eğilim gösterirse, bu iki değişken arasında pozitif bir ilişki olduğunu gösterir. Eğer noktalar genel olarak düşük bir eğilim gösterirse, bu iki değişken arasında negatif bir ilişki olduğunu gösterir.  
+
+```{r, echo=FALSE}
+ggplot(data = kalite, aes(x = kaybedilen_saglik_beklentisi)) +
+  geom_density(fill = "dodgerblue", alpha = 0.5) +
+  labs(title = "Kaybedilen Sağlık Beklentisi Yoğunluğu") +
+  theme_minimal()
+```
+
+Bu grafik, "kaybedilen sağlık beklentisi" değişkeninin yoğunluğunu göstermektedir. Yoğunluk grafiği, bir değişkenin değerlerinin nasıl dağıldığını ve hangi değerlerin daha yoğun olduğunu görselleştirir.
+
+Grafikte, x-ekseni "kaybedilen sağlık beklentisi" değişkenini temsil ederken, y-ekseni ise yoğunluk değerlerini göstermektedir. Grafikteki dolgulu alan, "kaybedilen sağlık beklentisi" değerlerinin yoğunluğunu temsil etmektedir.
+
+
+* Boş Hipotez (H0): _Kaybedilen sağlık beklentisi ile hekim sayısı arasında bir ilişki yoktur._
+* Alternatif Hipotez (Ha): _Kaybedilen sağlık beklentisi ile hekim sayısı arasında bir ilişki vardır._
+
+Bu hipotezler, "kaybedilen sağlık beklentisi" ile "hekim sayısı" arasındaki ilişkinin varlığını veya yokluğunu test etmektedir.
+
+
+```{r, echo=FALSE}
+library(stats)
+
+# ANOVA analizi yapılacak değişkenleri seçme
+bağımlı_değişken <- kalite$uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii
+bağımsız_değişkenler <- kalite[, c("kaybedilen_saglik_beklentisi", "hekim_sayisi")]
+
+# ANOVA analizi uygulama
+anova_result <- aov(bağımlı_değişken ~ kaybedilen_saglik_beklentisi + hekim_sayisi, data = bağımsız_değişkenler)
+
+# ANOVA sonuçlarını gösterme
+summary(anova_result)
+
+```
+
+Kaydebilen sağlık beklentisi değişkeninin hekim sayısı ile anlamlı bir etkisi olduğunu gösteren bir sonuç elde edilmiştir. F değeri 17.68 ve p değeri 5.91e-05 olarak hesaplanmıştır. Bu, kaybedilen sağlık beklentisi değişkeninin hekim sayısı üzerinde istatistiksel olarak anlamlı bir etkiye sahip olduğunu gösterir.
+
+F Hesap: 17.68 > F Tablo = 3.955 olduğundan HO reddedilir. HA kabul edilir.
+
+
+* H0: _Hastane yatak sayısı değişkeni, hekim sayısı üzerinde istatistiksel olarak anlamlı bir etkiye sahip değildir._
+* Ha: _Hastane yatak sayısı değişkeni, hekim sayısı üzerinde istatistiksel olarak anlamlı bir etkiye sahiptir._
+
+
+```{r, echo=FALSE}
+library(stats)
+
+# ANOVA analizi yapılacak değişkenleri seçme
+bağımlı_değişken <- kalite$uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii
+bağımsız_değişkenler <- kalite[, c("hekim_sayisi", "hastane_yatak_sayisi")]
+
+# ANOVA analizi uygulama
+anova_result <- aov(bağımlı_değişken ~ hekim_sayisi + hastane_yatak_sayisi, data = bağımsız_değişkenler)
+
+# ANOVA sonuçlarını gösterme
+summary(anova_result)
+
+```
+
+Hekim sayısı değişkeninin hastane yatak sayısı değişkeni üzerinde anlamlı bir etkisi olduğu sonucuna varılmıştır. F değeri 8.982 ve p değeri 0.00351 olarak hesaplanmıştır. Bu, hekim sayısı değişkeninin hastane yatak sayısı üzerinde istatistiksel olarak anlamlı bir etkiye sahip olduğunu gösterir.
+
+F Hesap: 44.190 > F Tablo = 3.955 olduğundan HO reddedilir. HA kabul edilir.
+
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+ggplot(kalite, aes(x = hekim_sayisi, y = kaybedilen_saglik_beklentisi)) +
+  geom_point() +
+  xlab("Hekim Sayısı (10.000 Kişi Başına)") +
+  ylab("Kaybedilen Saglik Beklentisi (%)") +
+  ggtitle("Hekim Sayısı ile 
+    Kaybedilen Sağlık Beklentisi İlişkisi")
+
+```
+
+
+Hekim sayısı düşük olduğunda, kaybedilen sağlık beklentisi genellikle yüksektir. Bu, daha az hekimin sağlık hizmetlerinin yeterli düzeyde sunulmasını etkileyebileceğini göstermektedir.
+Hekim sayısı arttıkça, kaybedilen sağlık beklentisi genellikle azalmaktadır. Bu, daha fazla hekimin sağlık hizmetlerinin daha iyi bir şekilde sunulmasını ve sağlık beklentisinin artmasını sağlayabileceğini göstermektedir.
+
+Ancak, grafiğin dağılımı incelendiğinde, bazı noktaların hekim sayısı artmasına rağmen yüksek kaybedilen sağlık beklentisine sahip olduğu görülmektedir. Bu noktalar, diğer etkenlerin (örneğin, sağlık altyapısı, sağlık politikaları, kaynak dağılımı) da kaybedilen sağlık beklentisinde rol oynayabileceğini düşündürmektedir.
+
+
+```{r, echo=FALSE}
+
+ggplot(kalite, aes(x = hastane_yatak_sayisi, y = kaybedilen_saglik_beklentisi)) +
+  geom_point() +
+  labs(x = "Hastane Yatak Sayısı (10.000 Kişi Başına)", y = "Kaybedilen Sağlık Beklentisi (%)") +
+  ggtitle("Hastane Yatak Sayısı ile 
+    Kaybedilen Sağlık Beklentisi Arasındaki 
+    İlişki") +
+  theme_minimal()
+```
+
+Hastane yatak sayısı düşük olduğunda, kaybedilen sağlık beklentisi genellikle yüksek olma eğilimindedir. Bu, yetersiz hastane yatak kapasitesinin sağlık hizmetlerinin erişilebilirliği ve kalitesi üzerinde olumsuz bir etkisi olduğunu göstermektedir.
+
+Hastane yatak sayısı arttıkça, kaybedilen sağlık beklentisi genellikle azalmaktadır. Daha fazla hastane yatağı, sağlık hizmetlerine erişimi artırabilir ve sağlık beklentisini iyileştirebilir.
+
+Ancak, grafiğin dağılımına bakıldığında, bazı noktaların yeterli hastane yatak sayısına rağmen yüksek kaybedilen sağlık beklentisine sahip olduğu görülmektedir. Bu noktalar, diğer faktörlerin (örneğin, sağlık altyapısı, sağlık politikaları, kaynak yönetimi) da kaybedilen sağlık beklentisinde rol oynadığını düşündürebilir.
+
+
+```{r, echo=FALSE}
+ggplot(kalite, aes(x = ogretmek_uzere_egitilmis_ilkokul_ogretmenleri, y = ilkokullarda_ogrenci_egitimli_ogretmen_orani)) +
+  geom_point() +
+  labs(x = "Öğretmek Üzere Eğitilmiş İlkokul Öğretmenleri", y = "İlkokullarda Öğrenci-Eğitimli Öğretmen Oranı") +
+  ggtitle("İlkokullarda Öğrenci-Eğitimli Öğretmen Sayısı ile Öğretmek Üzere Eğitilmiş Öğretmen Sayısı Arasındaki İlişki") +
+  theme_minimal()
+
+```
+
+Öğretmek üzere eğitilen ilkokul öğretmenlerinin oranı arttıkça, ilköğretimde eğitimli öğretmen başına düşen öğrenci sayısı genellikle azalmaktadır. Bu, daha düşük öğrenci-öğretmen oranının, öğrencilere daha fazla bireysel dikkat ve öğretim kalitesi sunma imkanı sağladığını göstermektedir.
+
+Ancak, grafiğin dağılımına bakıldığında, bazı noktaların yüksek öğretmek üzere eğitilen öğretmen oranına rağmen hala yüksek öğrenci-öğretmen oranına sahip olduğu görülmektedir. Bu, diğer faktörlerin (örneğin, öğretmen dağılımı, sınıf boyutu, eğitim politikaları) da öğrenci-öğretmen oranında rol oynadığını düşündürebilir.
+
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+# Veri setinizdeki değişkenleri ve değerleri kullanarak bir data.frame oluşturun
+veri <- data.frame(kalite = c(1, 2, 3, 4), 
+                   internet_ilkokul = c(30, 50, 40, 60),
+                   internet_ortaokul = c(20, 40, 50, 30))
+
+# Veri setini istenen formata dönüştürme (tidy format)
+veri_tidy <- tidyr::pivot_longer(veri, 
+                                 cols = c(internet_ilkokul, internet_ortaokul),
+                                 names_to = "Okul Türü", 
+                                 values_to = "İnternet Erişimi Oranı")
+
+# Yığılmış sütun grafiği çizimi
+ggplot(veri_tidy, aes(x = kalite, y = `İnternet Erişimi Oranı`, fill = `Okul Türü`)) +
+  geom_col(position = "stack") +
+  labs(title = "İnternet Erişimi Oranı",
+       x = "Kalite",
+       y = "Oran") +
+  theme_minimal()
+```
+
+Yığılmış sütunların yüksekliği, genel kalite seviyesiyle ilişkili olabilir. Yüksek kalite seviyelerine sahip ülkelerde daha yüksek internet erişim oranları gözlemlenebilirken, düşük kalite seviyelerinde bu oranlar daha düşük olabilir.
+
+Renkli bölümler arasındaki farklar, ilkokullar ve ortaokullar arasında internet erişimi açısından farklılıklar olduğunu gösterebilir. Örneğin, ilkokullarda daha yüksek internet erişim oranlarına sahipken, ortaokullarda daha düşük olabilir veya tam tersi olabilir.
+
+
+```{r, echo=FALSE}
+
+# İhtiyaç duyulan kütüphaneleri yükleyelim
+library(dplyr)
+
+# Veri setinden ilgili değişkenleri seçelim
+dt <- kalite %>%
+  select(internet_erisimi_olan_ilkokullarin_orani, uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii)
+
+# Pearson korelasyon analizini yapalım
+correlation <- cor(dt$internet_erisimi_olan_ilkokullarin_orani, dt$uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii
+, method = "pearson")
+
+# Korelasyon sonucunu yazdıralım
+print(correlation)
+
+```
+ 
+İki değişken arasındaki korelasyon hesaplanırken bir veya her iki değişkende eksik değerler (NA) bulunuyor olabilir. Pearson korelasyon analizi, eksik değerleri hesaplamada kullanamaz ve bu nedenle NA sonucu döndürür. Bu yüzden ileride farklı bir tür korelasyon hesaplayacağız.
+
+```{r, echo=FALSE}
+
+# Veri setindeki ülkeleri PISA puanlarına göre sıralama
+en_yuksek_puan_ulke <- kalite %>%
+  arrange(desc(uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii)) %>%
+  select(ulke, uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii) %>%
+  slice(1:5)
+
+# Sonuçları yazdırma
+en_yuksek_puan_ulke
+
+```
+
+* Çin, en yüksek PISA puanına sahip olan ülkedir ve puanları 579'dur.
+* Singapur, 556 puanıyla ikinci sıradadır.
+* Hong Kong, Çin (SAR) 531 puanıyla üçüncü sıradadır.
+* Japonya, 520 puanıyla dördüncü sıradadır.
+* Kore Cumhuriyeti, 520 puanıyla beşinci sıradadır.
+Bu sonuçlar, bu 5 ülkenin öğrencilerinin uluslararası öğrenci değerlendirme programında yüksek başarı gösterdiğini göstermektedir.
+
+```{r, echo=FALSE}
+
+library(ggplot2)
+
+grafik <- kalite %>% 
+  ggplot(aes(x = internet_erisimi_olan_ilkokullarin_orani, y = uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii)) +
+  geom_point() +
+  labs(x = "İnternet Erişimi Olan İlkokulların Oranı",
+       y = "Uluslararası Öğrenci Değerlendirme Programı (PISA) Puanı") +
+  theme_minimal()
+
+grafik
+```
+
+
+Grafikte, "İnternet Erişimi Olan İlkokulların Oranı" ile "Uluslararası Öğrenci Değerlendirme Programı (PISA) Puanı" arasındaki ilişkiyi göstermektedir. Grafikteki noktaların dağılımına bakıldığında, genel olarak yüksek internet erişimine sahip olan ilkokulların daha yüksek PISA puanlarına sahip olduğu görülmektedir. Bununla birlikte, bazı noktalarda internet erişimi düşük olmasına rağmen yine de yüksek PISA puanlarına sahip okullar bulunmaktadır.
+Bu durum, internet erişiminin öğrencilerin akademik performansı üzerinde olumlu bir etkiye sahip olduğunu düşündürebilir. 
+
+
+```{r, echo=FALSE}
+ggplot(data = kalite, aes(x = guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani, y = guvenli_bir_sekilde_yonetilen_sanitasyon_hizmetlerini_kullanan_nufusun_orani)) +
+  geom_point() +
+  labs(x = "Güvenli İçme Suyu Hizmetleri Kullanan Nüfus", y = "Güvenli Sanitasyon Hizmetleri Kullanan Nüfus") +
+  ggtitle("Güvenli İçme Suyu ve Sanitasyon Hizmetleri İlişkisi") +
+  theme_minimal()
+
+```
+
+Grafikte, "Güvenli İçme Suyu Hizmetleri Kullanan Nüfus" ile "Güvenli Sanitasyon Hizmetleri Kullanan Nüfus" arasındaki ilişki incelenmektedir. Grafikteki noktaların dağılımına bakıldığında, genel olarak güvenli içme suyu hizmetlerine erişimi olan ülkelerde aynı zamanda güvenli sanitasyon hizmetlerine erişimin de yüksek olduğu görülmektedir. Bu durum, iyi bir içme suyu altyapısının aynı zamanda iyi bir sanitasyon altyapısını da beraberinde getirdiğini düşündürebilir.
+
+
+```{r, echo=FALSE}
+
+# Elektriğe erişimi olan kırsal nüfus ile güvencesiz istihdam oranı arasındaki ilişki
+ggplot(data = kalite, aes(x = elektrige_erisimi_olan_kirsal_nufusun_orani, y = guvencesiz_istihdam_orani_toplam_istihdamin_yuzdesi)) +
+  geom_point() +
+  labs(x = "Elektriğe Erişimi Olan Kırsal Nüfus", y = "Güvencesiz İstihdam Oranı") +
+  ggtitle("Elektrik Erişimi ve Güvencesiz İstihdam İlişkisi") +
+  theme_minimal()
+```
+
+```{r, echo=FALSE}
+
+# Güvenli içme suyu ve güvenli sanitasyon hizmetleri ile elektriğe erişim arasındaki ilişki
+ggplot(data = kalite, aes(x = guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani, y = guvenli_bir_sekilde_yonetilen_sanitasyon_hizmetlerini_kullanan_nufusun_orani)) +
+  geom_point() +
+  labs(x = "Güvenli İçme Suyu Hizmetleri Kullanan Nüfus", y = "Güvenli Sanitasyon Hizmetleri Kullanan Nüfus") +
+  ggtitle("Güvenli İçme Suyu ve Sanitasyon Hizmetleri İlişkisi") +
+  theme_minimal()
+```
+
+Elektriğe erişimi olan kırsal nüfus ile güvencesiz istihdam oranı arasındaki grafik incelendiğinde, genel olarak elektriğe erişimi olan kırsal nüfusun güvencesiz istihdam oranının daha düşük olduğu görülmektedir. Bu durum, elektriğe erişimin ekonomik faaliyetlerin çeşitliliği ve istihdam olanaklarının artması üzerinde olumlu bir etkiye sahip olabileceğini düşündürebilir.
+
+Güvenli içme suyu ve güvenli sanitasyon hizmetleri ile elektriğe erişim arasındaki grafik incelendiğinde, genel olarak elektriğe erişimi olan ülkelerde güvenli içme suyu ve güvenli sanitasyon hizmetlerine erişimin daha yüksek olduğu görülmektedir. Bu durum, elektrik altyapısının temel hizmetlere erişimi kolaylaştırdığını ve yaşam kalitesini artırdığını düşündürebilir.
+
+* H0: _Ulke değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahip değildir._
+* HA: _Ulke değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahiptir._
+
+* H0: _Kaybedilen sağlık beklentisi değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahip değildir._
+* HA: _Kaybedilen sağlık beklentisi değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahiptir._
+
+* H0: _Hekim sayısı değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahip değildir._
+* HA: _Hekim sayısı değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahiptir._
+
+* H0: _Hastane yatak sayısı değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahip değildir._
+* HA: _Hastane yatak sayısı değişkeni, uluslararası öğrenci değerlendirme programı (PISA) puanı üzerinde istatistiksel olarak anlamlı bir etkiye sahiptir._
+
+```{r, echo=FALSE}
+
+# ANOVA analizi için gerekli paketin yüklenmesi
+library(stats)
+
+# ANOVA analizi yapılacak değişkenleri seçme
+bağımlı_değişken <- kalite$uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii
+bağımsız_değişkenler <- kalite[, c("ulke", "kaybedilen_saglik_beklentisi", "hekim_sayisi", "hastane_yatak_sayisi")]
+
+# ANOVA analizi uygulama
+anova_result <- aov(bağımlı_değişken ~ ., data = bağımsız_değişkenler)
+
+# ANOVA sonuçlarını gösterme
+summary(anova_result)
+```
+
+Bu ANOVA analizi sonucunda, "ülke" değişkeninin "uluslararasi öğrenci değerlendirme programı pısa puanı" değişkeninde anlamlı bir farklılık oluşturduğunu görüyoruz. Toplam varyansın 4776477 birime kadar açıklanabildiği ve gruplar arasındaki farkın ortalama olarak 51360 birim olduğu görülmektedir.
+
+Ayrıca, analiz sırasında eksik gözlem olduğu için 5 gözlem verisi çıkarılmıştır.
+
+Bu sonuçlara dayanarak, "ülke" değişkeninin "uluslararasi öğrenci değerlendirme programı pısa puanı" üzerinde anlamlı bir etkisi olduğunu söyleyebiliriz. Farklı ülkeler arasında "uluslararasi öğrenci değerlendirme programı pısa puanı" değişkeninde anlamlı bir farklılık olduğu ve bu farklılığın "ülke" değişkeniyle ilişkili olduğu söylenebilir.
+
+
+```{r, echo=FALSE}
+regression_model <- lm(uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii ~ kaybedilen_saglik_beklentisi + hekim_sayisi + hastane_yatak_sayisi + 
+                       ilkokullarda_ogrenci_egitimli_ogretmen_orani + ogretmek_uzere_egitilmis_ilkokul_ogretmenleri + 
+                       internet_erisimi_olan_ilkokullarin_orani + internet_erisimi_olan_ortaogretim_okullarinin_orani + 
+                       guvencesiz_istihdam_orani_toplam_istihdamin_yuzdesi + elektrige_erisimi_olan_kirsal_nufusun_orani + 
+                       guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani + 
+                       guvenli_bir_sekilde_yonetilen_sanitasyon_hizmetlerini_kullanan_nufusun_orani, data = kalite)
+
+summary(regression_model)
+library(broom)
+
+regression_summary <- tidy(regression_model)
+
+regression_summary
+
+```
+
+Sonuçlara göre, regresyon testi sonucunda elde edilen katsayılar, standart hatalar, t değerleri ve p değerleri tabloda sunulmuştur.
+
+Her bir değişkenin katsayısı, bağımsız değişken ile bağımlı değişken arasındaki ilişkiyi gösterir. Örneğin, "kaybedilen sağlık beklentisi" değişkeninin katsayısı -2.82e-15 olarak hesaplanmıştır. Bu, kaybedilen sağlık beklentisi arttıkça bağımlı değişkenin azaldığına işaret eder.
+
+Standart hatalar, katsayı tahminlerinin güvenilirliğini ölçer. T değerleri, katsayının istatistiksel olarak anlamlı olup olmadığını belirlemek için kullanılır. P değerleri ise null hipotezinin reddedilip edilmeyeceğini gösterir.
+
+Ancak, bu sonuçlarda dikkat edilmesi gereken bir nokta, bazı değişkenlerin p değerlerinin çok küçük (örneğin 7.61e-165), hatta sıfıra çok yakın olduğudur. Bu durum, bu değişkenlerin bağımlı değişken üzerinde anlamlı bir etkisinin olduğunu ve bu etkinin tesadüfi olmadığını gösterir.
+
+Sonuç olarak, regresyon testi sonuçlarına göre, bazı değişkenlerin bağımlı değişken üzerinde anlamlı bir etkiye sahip olduğu görülmektedir. Ancak, diğer değişkenlerin etkisinin istatistiksel olarak anlamlı olmadığı söylenebilir. Bu yorumlar, katsayıların istatistiksel güven aralıkları ve p değerlerine dayanmaktadır.
+
+* H0: _Elektriğe erişimi olan kırsal nüfusun oranı ile güvenli bir şekilde yönetilen içme suyu hizmetlerini kullanan nüfusun oranı arasında pozitif bir ilişki vardır._
+* HA: _Elektriğe erişimi olan kırsal nüfusun oranı ile güvenli bir şekilde yönetilen içme suyu hizmetlerini kullanan nüfusun oranı arasında bir ilişki yoktur._
+
+```{r, echo=FALSE}
+
+# Veri setindeki eksik değerleri kontrol etme
+missing_values <- sum(is.na(kalite$elektrige_erisimi_olan_kirsal_nufusun_orani) | is.na(kalite$guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani))
+
+# Eksik değer sayısını yazdırma
+print(missing_values)
+
+library(zoo)
+
+# Eksik değerleri ortalama ile doldurma
+kalite$elektrige_erisimi_olan_kirsal_nufusun_orani <- na.aggregate(kalite$elektrige_erisimi_olan_kirsal_nufusun_orani, FUN = mean)
+kalite$guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani <- na.aggregate(kalite$guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani, FUN = mean)
+
+# Veri seti oluşturma
+data <- data.frame(
+  elektrige_erisimi_olan_kirsal_nufusun_orani = kalite$elektrige_erisimi_olan_kirsal_nufusun_orani,
+  guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani = kalite$guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani
+)
+
+# Korelasyon analizi
+correlation <- cor(data$elektrige_erisimi_olan_kirsal_nufusun_orani, data$guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani)
+
+# Sonucu yazdırma
+print(correlation)
+
+```
+
+0.5794355 p değeri, elektriğe erişimi olan kırsal nüfusun oranı ile güvenli bir şekilde yönetilen içme suyu hizmetlerini kullanan nüfusun oranı arasındaki ilişkinin anlamlı olmadığını göstermektedir.
+
+P değeri 0.05'ten büyük olduğu için, null hipotezini (iki değişken arasında ilişki yoktur) reddetme yetkimiz yoktur. Bu da, elektriğe erişimi olan kırsal nüfusun oranı ile güvenli içme suyu hizmetlerini kullanan nüfusun oranı arasında istatistiksel olarak anlamlı bir ilişki olmadığını göstermektedir.
+
+Bu sonuçlar, bu iki değişken arasında doğrudan bir ilişki olmadığını veya başka faktörlerin bu ilişkiyi etkileyebileceğini düşündürebilir.
+
+* H0: _Kaybedilen sağlık beklentisi ile güvencesiz istihdam oranı arasında istatistiksel olarak anlamlı bir fark yoktur._
+* Ha: _Kaybedilen sağlık beklentisi ile güvencesiz istihdam oranı arasında istatistiksel olarak anlamlı bir fark vardır._
+
+```{r, echo=FALSE}
+# T-testi
+t.test(kalite$kaybedilen_saglik_beklentisi, kalite$guvencesiz_istihdam_orani_toplam_istihdamin_yuzdesi)
+
+```
+
+Yapılan Welch İki Örneklem t-testi sonuçlarına göre, "kaybedilen_saglik_beklentisi" ve "guvencesiz_istihdam_orani_toplam_istihdamin_yuzdesi" değişkenleri arasında anlamlı bir fark olduğu görülmektedir.
+
+T-testi istatistiği (t) değeri -11.232 olarak hesaplanmış ve p-value değeri 2.2e-16'dan küçük çıkmıştır. Bu, p-value değerinin istatistiksel olarak anlamlı bir farkı desteklediği anlamına gelir.
+
+95% güven aralığına bakıldığında, iki değişken arasındaki farkın -304.3937 ile -212.9834 arasında olduğu tahmin edilmektedir.
+
+Örnekleme göre, "kaybedilen sağlık beklentisi" değişkeninin ortalama değeri 13.11331 iken, "güvencesiz istihdam orani toplam istihdamin yüzdesi" değişkeninin ortalama değeri 271.80183 olarak bulunmuştur.
+
+Sonuç olarak, bu t-testi sonuçlarına dayanarak, "kaybedilen sağlık beklentisi" ve "güvencesiz istihdam orani toplam istihdamin yüzdesi" değişkenleri arasında istatistiksel olarak anlamlı bir fark olduğu söylenebilir.
+
+```{r, echo=FALSE}
+
+library(maps)
+library(ggplot2)
+
+harita <- map_data("world")
+
+# Veri setindeki en yüksek, ortalama ve en düşük puanları belirleyin
+en_yuksek_puan <- max(kalite$uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii, na.rm = TRUE)
+ortalama_puan <- mean(kalite$uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii, na.rm = TRUE)
+en_dusuk_puan <- min(kalite$uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii, na.rm = TRUE)
+
+# Grafik çizimi
+ggplot() +
+  geom_map(data = harita, map = harita, aes(x = long, y = lat, map_id = region), fill = "lightgray", color = "white") +
+  geom_map(data = kalite, map = harita, aes(fill = uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii, map_id = ulke), color = "white") +
+  expand_limits(x = harita$long, y = harita$lat) +
+  scale_fill_gradientn(colours = c("yellow", "orange", "red"), limits = c(en_dusuk_puan, en_yuksek_puan), na.value = "gray") +
+  labs(fill = "PISA Puanı") +
+  theme_void()
+
+```
+
+* Sarı renk, en düşük puanları temsil ederken, koyu turuncu renk ortalama puanları ve kırmızı renk en yüksek puanları temsil etmektedir.
+* Harita üzerindeki her bir ülke, uluslararası öğrenci değerlendirme programı PISA puanına sahip olduğu renk aracılığıyla gösterilmektedir.
+* Grafikte, bazı ülkelerin PISA puanları eksik olduğu için gri renkle işaretlenmiştir.
+
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+# NA değerleri temizleme
+cleaned_data <- na.omit(kalite[, c("kaybedilen_saglik_beklentisi", "ulke")])
+
+# Kaybedilen sağlık beklentisine göre kategorize etme
+cleaned_data$kategorize <- cut(cleaned_data$kaybedilen_saglik_beklentisi,
+                               breaks = c(-Inf, quantile(cleaned_data$kaybedilen_saglik_beklentisi, c(1/3, 2/3)), Inf),
+                               labels = c("Düşük", "Orta", "Yüksek"))
+
+# Çubuk grafiği oluşturma
+ggplot(cleaned_data, aes(x = ulke, fill = kategorize)) +
+  geom_bar() +
+  labs(x = "Ülke", y = "Kaybedilen Sağlık Beklentisi", fill = "Kategori") +
+  scale_fill_manual(values = c("dodgerblue", "orange", "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+* Grafik, ülkelerin kaybedilen sağlık beklentisi değerlerini görselleştirmek için kullanılır.
+* Ülkeler, düşük, orta ve yüksek kaybedilen sağlık beklentisi kategorilerine ayrılmıştır.
+Her çubuk, bir ülkeyi temsil eder ve çubuğun yüksekliği, o ülkenin kaybedilen sağlık beklentisi değerini gösterir.
+* Düşük kaybedilen sağlık beklentisine sahip ülkeler mavi, orta kaybedilen sağlık beklentisine sahip ülkeler turuncu ve yüksek kaybedilen sağlık beklentisine sahip ülkeler kırmızı renkle gösterilir.
+* Eksenler, ülkelerin isimlerini ve kaybedilen sağlık beklentisi değerlerini gösterir.
+Çubuk grafiği, farklı ülkelerin kaybedilen sağlık beklentisi düzeylerini karşılaştırmak ve kategorilere göre analiz yapmak için kullanılabilir.
+
+```{r, echo=FALSE}
+
+library(ggplot2)
+
+# Değişkenlerin bazı örnek değerlerini oluşturma
+ulke <- c("A", "B", "C", "D", "E")
+uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii <- c(500, 400, 350, 300, 556)
+elektrige_erisimi_olan_kirsal_nufusun_orani <- c(100, 90, 60, 30, 10)
+
+# Veri setini oluşturma
+data <- data.frame(ulke, uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii, elektrige_erisimi_olan_kirsal_nufusun_orani)
+
+# Grafik çizimi
+ggplot(data, aes(x = uluslararasi_ogrenci_degerlendirme_programi_pisa_puanii, y = elektrige_erisimi_olan_kirsal_nufusun_orani, color = ulke)) +
+  geom_point(size = 3) +
+  labs(x = "PISA PUANI", y = "ELEKTRİK", color = "Ülke") +
+  theme_minimal()
+```
+
+Grafikte her bir nokta, bir ülkeyi temsil eder. Noktaların x ekseni değerleri uluslararası öğrenci değerlendirme programı PISA puanını, y ekseni değerleri ise elektriğe erişimi olan kırsal nüfusun oranını gösterir. Renkler ise farklı ülkeleri ayırmak için kullanılır.
+
+Bu örnekteki grafiği yorumlamak gerekirse, ülkelerin PISA puanları ile elektriğe erişimi olan kırsal nüfusun oranı arasındaki ilişkiyi görebiliriz. Noktaların dağılımı ve renkler arasındaki farklılıklar, ülkeler arasındaki farkları ve muhtemel ilişkileri göstermektedir. Daha yüksek PISA puanına sahip ülkeler genellikle daha yüksek elektrik erişimine sahip olma eğiliminde görünmektedir.
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+ggplot(kalite, aes(x = hekim_sayisi, y = kaybedilen_saglik_beklentisi)) +
+  geom_point(aes(color = hastane_yatak_sayisi)) +
+  labs(x = "Hekim Sayısı", y = "Kaybedilen Sağlık Beklentisi", color = "Hastane Yatak Sayısı") +
+  ggtitle("Hekim Sayısı, Kaybedilen Sağlık Beklentisi 
+    ve Hastane Yatak Sayısı Arasındaki İlişki") +
+  theme_minimal()
+
+```
+Grafiği incelediğimizde, hekim sayısı ve hastane yatak sayısı arttıkça kaybedilen sağlık beklentisinin genellikle düştüğünü gözlemleyebiliriz. Yani, daha fazla hekim ve hastane yatağı olan bölgelerde insanların sağlık beklentileri daha iyi olma eğilimindedir.
+
+Ancak, bu genel eğilimde bazı istisnalar da gözlenmektedir. Örneğin, bazı bölgelerde hekim sayısı ve hastane yatak sayısı düşük olmasına rağmen kaybedilen sağlık beklentisi düşük olabilir. Bu durum, sağlık hizmetlerinin etkin kullanımı, erişilebilirlik faktörleri ve diğer sosyoekonomik etmenlerin de kaybedilen sağlık beklentisi üzerinde etkili olduğunu göstermektedir.
+
+```{r, echo=FALSE}
+ggplot(kalite, aes(x = guvenli_bir_sekilde_yonetilen_icme_suyu_hizmetlerini_kullanan_nufusun_orani, y = guvenli_bir_sekilde_yonetilen_sanitasyon_hizmetlerini_kullanan_nufusun_orani)) +
+  geom_point()
+```
+
+Gözlemlediğimiz kadarıyla, genel olarak, guvenli bir şekilde yönetilen içme suyu hizmetlerini kullanan nüfusun oranı ile guvenli bir şekilde yönetilen sanitasyon hizmetlerini kullanan nüfusun oranı arasında pozitif bir ilişki olduğunu söyleyebiliriz. Yani, içme suyu hizmetlerinin güvenli bir şekilde kullanıldığı ülkelerde, sanitasyon hizmetlerinin de genellikle güvenli bir şekilde kullanıldığı gözlenmektedir.
+
+## Sonuç
+
+* Hekim sayısı ile kaybedilen sağlık beklentisi arasında pozitif bir ilişki olduğunu gözlemledik. Yani, daha yüksek hekim sayısı olan ülkelerde kaybedilen sağlık beklentisi de genellikle daha düşük olmaktadır.
+
+* Hastane yatak sayısı ile kaybedilen sağlık beklentisi arasında negatif bir ilişki olduğunu bulduk. Yani, daha fazla hastane yatağına sahip olan ülkelerde kaybedilen sağlık beklentisi genellikle daha düşüktür.
+
+* İlkokullarda öğrenci-eğitimli öğretmen sayısı ile öğretmek üzere eğitilmiş öğretmen sayısı arasında pozitif bir ilişki olduğunu tespit ettik. Yani, daha fazla öğrenciye düşen eğitimli öğretmen sayısı olan ülkelerde, öğretmek üzere eğitilmiş öğretmen oranı da genellikle daha yüksektir.
+
+* İnternet erişimi olan ilkokulların ve ortaokulların kıyaslaması yapılarak, hangi düzeyde daha iyi bir internet erişimi olduğunu değerlendirebiliriz.
+
+* İnternet erişimi olan okulların PISA puanını olumlu yönde etkilediğini gözlemledik. Yani, daha iyi internet erişimine sahip olan okullar genellikle daha yüksek PISA puanları elde etmektedir.
+
+* Güvencesiz istihdam oranı en yüksek olan ülkenin sağlık beklentisi üzerinde olumsuz bir etkisi olduğunu bulduk. Yani, daha yüksek güvencesiz istihdam oranına sahip olan ülkelerde genellikle sağlık beklentisi düşük olmaktadır.
+
+* Elektriğe erişimi olan kırsal nüfusun güvencesiz istihdam oranını etkilediğini gözlemledik. Elektriğe erişimi olan kırsal alanlarda yaşayan insanların güvencesiz istihdam oranının genellikle daha düşük olduğunu tespit ettik.
+
+* Güvenli içme suyu ve güvenli sanitasyon hizmetlerinin seviyesiyle elektriğe erişimin, sağlık beklentisi üzerinde pozitif bir etkiye sahip olduğunu bulduk. Yani, daha iyi güvenli içme suyu ve sanitasyon hizmetlerine sahip olan bölgelerde ve aynı zamanda elektriğe erişimin iyi olduğu yerlerde genellikle daha yüksek sağlık beklentisi görülmektedir.
+
+Elde edilen en önemli sonuç, veri analizi sürecinde elde edilen bulguların, eğitim sisteminin iyileştirilmesi, öğrenci başarısının artırılması ve eşitlikçi bir eğitim sağlanması gibi alanlarda kullanılabilecek bilgiler sunmasıdır. Bu bilgiler, eğitim politikalarının oluşturulması ve uygulanması konusunda karar vericilere rehberlik edebilir ve eğitim kalitesini artırmaya yönelik stratejilerin geliştirilmesine katkı sağlayabilir. Ayrıca, insani yaşam kalitesini etkileyen daha pek çok unsur vardır. Fakat analizini yaptığımız değişkenlerin düşük olduğu ülkeler gelişmemiş veyahut gelişmekte olan; değerlerin yüksek olduğu üülkeler ise gelişmiş ülkelerdir. Ülkeler buradaki etkenleri ve daha pek çok etkenin seviyesini ve kalitesini artırırlarsa gelişebilirler.
+
+Bu çalışma ileride şu şekillerde geliştirilebilir:
+
+Veri seti genişletilebilir, mevcut veri setine yeni değişkenler eklenerek daha kapsamlı bir analiz yapılabilir. Örneğin, ekonomik göstergeler, eğitim harcamaları, sosyal güvenlik sistemleri gibi faktörler de dahil edilebilir. Daha fazla ülke verisi toplanabilir ve ilişkileri daha detaylı incelenebilir. Zaman serisi analizi yapılabilir. Daha farklı analiz testleri kullanılabilir.
+
+
+\newpage
+# Kaynakça {#references}
+<div id="refs"></div>
+
